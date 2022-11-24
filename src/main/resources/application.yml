@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: messaging-service
+  profiles:
+    active: default,dev
+
+orderup:
+  kafka:
+    topic: notifications
