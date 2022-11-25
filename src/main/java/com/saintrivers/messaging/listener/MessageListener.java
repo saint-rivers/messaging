@@ -1,4 +1,4 @@
-package com.saintrivers.messaging.config;
+package com.saintrivers.messaging.listener;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -22,12 +22,12 @@ public class MessageListener {
     @KafkaListener(topics = "notifications.groups", groupId = "kafka-orderup")
     public void listenGroup(Message message) {
         System.out.println("listening: " + message.toString());
-        messagingTemplate.convertAndSend("/topic/group/" + message.id(), message);
+        messagingTemplate.convertAndSend("/topic/group/" + message.receiver(), message);
     }
 
     @KafkaListener(topics = "notifications.users", groupId = "kafka-orderup")
     public void listen(Message message) {
         System.out.println("listening: " + message.toString());
-        messagingTemplate.convertAndSend("/topic/user/" + message.id(), message);
+        messagingTemplate.convertAndSend("/topic/user/" + message.receiver(), message);
     }
 }

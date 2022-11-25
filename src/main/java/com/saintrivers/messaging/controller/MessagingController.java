@@ -1,8 +1,10 @@
 package com.saintrivers.messaging.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,15 +19,21 @@ public class MessagingController {
         this.kafkaTemplate = kafkaTemplate;
     }
 
-    @PostMapping("/notifications/send/user/{id}")
-    public ResponseEntity<String> sendMessageUser(@PathVariable String id, @RequestBody Message body) {
+    @PostMapping("/notifications/send/user")
+    public ResponseEntity<Map<String, String>> sendMessageUser(@RequestBody Message body) {
         kafkaTemplate.send("notifications.users", body);
-        return ResponseEntity.ok("sent to user " + id);
+
+        var response = new HashMap<String, String>();
+        response.put("message", "sent to user " + body.receiver());
+        return ResponseEntity.ok().body(response);
     }
 
-    @PostMapping("/notifications/send/group/{id}")
-    public ResponseEntity<String> sendMessageToGroup(@PathVariable String id, @RequestBody Message body) {
+    @PostMapping("/notifications/send/group")
+    public ResponseEntity<Map<String, String>> sendMessageToGroup(@RequestBody Message body) {
         kafkaTemplate.send("notifications.groups", body);
-        return ResponseEntity.ok("sent to group " + id);
+
+        var response = new HashMap<String, String>();
+        response.put("message", "sent to group " + body.receiver());
+        return ResponseEntity.ok().body(response);
     }
 }
